@@ -1,0 +1,3 @@
+[submodule "_config/maker"]
+	path = _config/maker
+	url = git@github.com:dev7pc/maker.git
