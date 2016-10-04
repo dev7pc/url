@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace SevenPercent;
 
@@ -10,25 +10,30 @@ class URL {
 
 	public $queryPrefix = '';
 
-	public function __construct($url = '') {
+	public function __construct(string $url = '') {
 
 		// Tokenise the supplied string
-		if (($this->_components = (object)parse_url($url)) === FALSE) {
+		if (($components = parse_url($url)) === FALSE) {
 			throw new Exception('Invalid URL');
 
-		// When parse_url() is called with an empty string, it sets ['path'] as an empty string, so unset this now for clarity later on
-		} elseif (isset($this->_components->path) && $this->_components->path === '') {
-			unset($this->_components->path);
-		}
+		} else {
 
-		// Parse the query token into an associative array
-		if (isset($this->_components->query)) {
-			parse_str($this->_components->query, $this->_components->query);
+			// When parse_url() is called with an empty string, it sets ['path'] as an empty string, so unset this now for clarity later on
+			if (array_key_exists('path', $components) && $components['path'] === '') {
+				unset($components['path']);
+			}
+
+			// Parse the query token into an associative array
+			if (array_key_exists('query', $components)) {
+				parse_str($components['query'], $components['query']);
+			}
+
+			$this->_components = (object)$components;
 		}
 	}
 
 	// Magic getter
-	public function __get($name) {
+	public function __get(string $name) {
 		switch ($name) {
 			case @isSecure:
 				return isset($this->_components->scheme) && strtolower(substr($this->_components->scheme, -1)) === 's';
@@ -38,7 +43,7 @@ class URL {
 	}
 
 	// Magic setter, parses query parameter into an array to support setting the query as a string
-	public function __set($name, $value) {
+	public function __set(string $name, $value) {
 		if (empty($value)) {
 			unset($this->_components->$name);
 		} else {
@@ -56,12 +61,12 @@ class URL {
 	}
 
 	// Magic unsetter
-	public function __unset($name) {
+	public function __unset(string $name) {
 		unset($this->_components->$name);
 	}
 
 	// Magic cast to string
-	public function __toString() {
+	public function __toString(): string {
 		$url = '';
 
 		// TO DO: this looping approach probably isn't sustainable - it may be necessary to apply multiple callbacks to an individual component, or separate pre- and post-concatenation callbacks
@@ -76,7 +81,7 @@ class URL {
 			'fragment' => ['#', '', '', []],
 		] as $component => list($prefix, $suffix, $callback, $parameters)) {
 			if (isset($this->_components->$component)) {
-				$url .= $callback === '' ? "$prefix$this->_components->$component$suffix" : $prefix . call_user_func_array($callback, array_merge([$this->_components->$component], $parameters)) . $suffix;
+				$url .= $callback === '' ? "$prefix{$this->_components->$component}$suffix" : $prefix . call_user_func_array($callback, array_merge([$this->_components->$component], $parameters)) . $suffix;
 			}
 		}
 
