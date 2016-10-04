@@ -1,9 +1,26 @@
 {
-	"name": "sevenpercent/url",
-	"description": "URL helper class",
+	"authors": [
+		{
+			"name": "SevenPercent Developer",
+			"email": "dev7pc@sevenpercent.solutions"
+		}
+	],
 	"autoload": {
 		"psr-4": {
-			"SevenPercent\\": "src"
+			"SevenPercent\\": "src/"
 		}
-	}
+	},
+	"description": "URL helper class",
+	"license": "Unlicense",
+	"name": "sevenpercent/url",
+	"require": {
+		"php": "^7.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^5.5.6"
+	},
+	"support": {
+		"email": "dev7pc@sevenpercent.solutions"
+	},
+	"type": "library"
 }

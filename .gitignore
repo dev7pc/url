@@ -1,0 +1,5 @@
+/.composer-installer
+/.composer-installer.sha384
+/composer-*.phar
+/composer.phar
+/vendor/
